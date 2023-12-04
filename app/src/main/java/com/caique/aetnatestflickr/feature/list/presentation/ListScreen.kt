@@ -24,18 +24,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.caique.aetnatestflickr.R
 import com.caique.aetnatestflickr.data.model.Media
 import com.caique.aetnatestflickr.data.model.PhotoItem
+import com.caique.aetnatestflickr.data.network.FlickrApi
+import com.caique.aetnatestflickr.data.network.FlickrRepository
 import com.caique.aetnatestflickr.ui.Screen
 import com.caique.aetnatestflickr.ui.components.SearchToolbar
+import com.caique.aetnatestflickr.ui.design.AppTheme
 import com.caique.aetnatestflickr.ui.navigateToDetail
 import org.koin.androidx.compose.getViewModel
 
@@ -55,8 +60,7 @@ val recentSearchs = List(5) {
 @Composable
 fun PhotoList(
     navController: NavController,
-    modifier: Modifier = Modifier,
-    viewModel: ListViewModel = getViewModel()
+    modifier: Modifier = Modifier
 ) {
     var searchText by remember { mutableStateOf("") }
 
@@ -117,6 +121,16 @@ fun FlickrItem(photo: PhotoItem,
                 .padding(top = 8.dp)
                 .fillMaxWidth()
 
+        )
+    }
+}
+
+@Composable
+@Preview
+fun ListPreview() {
+    AppTheme {
+        PhotoList(
+            navController = rememberNavController()
         )
     }
 }
