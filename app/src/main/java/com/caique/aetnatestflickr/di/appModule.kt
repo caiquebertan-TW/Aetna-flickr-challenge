@@ -6,9 +6,9 @@ import com.caique.aetnatestflickr.data.network.FlickrApi
 import com.caique.aetnatestflickr.data.domain.FlickrRepository
 import com.caique.aetnatestflickr.data.domain.RecentSearchRepository
 import com.caique.aetnatestflickr.feature.detail.presentation.DetailViewModel
-import com.caique.aetnatestflickr.feature.list.domain.AddRecentSearchUseCase
-import com.caique.aetnatestflickr.feature.list.domain.GetPhotosUseCase
-import com.caique.aetnatestflickr.feature.list.domain.GetRecentSearchesUseCase
+import com.caique.aetnatestflickr.feature.list.domain.interactor.AddRecentSearchUseCase
+import com.caique.aetnatestflickr.feature.list.domain.interactor.GetPhotosUseCase
+import com.caique.aetnatestflickr.feature.list.domain.interactor.GetRecentSearchesUseCase
 import com.caique.aetnatestflickr.feature.list.domain.RecentSearchRepositoryImpl
 import com.caique.aetnatestflickr.feature.list.presentation.ListViewModel
 import org.koin.android.ext.koin.androidContext
@@ -25,9 +25,9 @@ val appModule = module {
     single<RecentSearchRepository> {
         RecentSearchRepositoryImpl(get())
     }
-    single { AddRecentSearchUseCase(get())}
-    single { GetPhotosUseCase(get())}
-    single { GetRecentSearchesUseCase(get())}
+    single { AddRecentSearchUseCase(get()) }
+    single { GetPhotosUseCase(get()) }
+    single { GetRecentSearchesUseCase(get()) }
 
     viewModel { ListViewModel(get(), get(), get()) }
     viewModel { DetailViewModel(get()) }

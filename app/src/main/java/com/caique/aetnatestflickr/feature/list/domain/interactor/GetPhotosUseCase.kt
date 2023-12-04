@@ -1,4 +1,4 @@
-package com.caique.aetnatestflickr.feature.list.domain
+package com.caique.aetnatestflickr.feature.list.domain.interactor
 
 import com.caique.aetnatestflickr.data.domain.FlickrRepository
 

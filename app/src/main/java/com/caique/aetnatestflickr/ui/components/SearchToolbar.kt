@@ -41,14 +41,12 @@ fun SearchToolbar(
     modifier: Modifier = Modifier,
     searchQuery: String = "",
     suggestions: List<String> = emptyList(),
-//    onSearchQueryChanged: (String) -> Unit,
     onSearchTriggered: (String) -> Unit,
 ) {
     Box(
         modifier = modifier.padding(horizontal = 16.dp
     )) {
         SearchTextField(
-//            onSearchQueryChanged = onSearchQueryChanged,
             onSearchTriggered = onSearchTriggered,
             searchQuery = searchQuery,
             suggestions = suggestions

@@ -3,4 +3,5 @@
     <string name="back">Back</string>
     <string name="search">Search</string>
     <string name="clear_search_text_content_desc">Clear search text</string>
+    <string name="no_searches_yet">You have no recent searches. Enter a search term above.</string>
 </resources>

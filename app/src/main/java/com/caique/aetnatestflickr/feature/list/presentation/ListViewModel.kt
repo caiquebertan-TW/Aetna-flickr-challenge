@@ -3,9 +3,9 @@ package com.caique.aetnatestflickr.feature.list.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.caique.aetnatestflickr.data.model.PhotoItem
-import com.caique.aetnatestflickr.feature.list.domain.GetPhotosUseCase
-import com.caique.aetnatestflickr.feature.list.domain.GetRecentSearchesUseCase
-import com.caique.aetnatestflickr.feature.list.domain.AddRecentSearchUseCase
+import com.caique.aetnatestflickr.feature.list.domain.interactor.GetPhotosUseCase
+import com.caique.aetnatestflickr.feature.list.domain.interactor.GetRecentSearchesUseCase
+import com.caique.aetnatestflickr.feature.list.domain.interactor.AddRecentSearchUseCase
 import com.caique.aetnatestflickr.util.ResultState
 import com.caique.aetnatestflickr.util.WhileUiSubscribed
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,7 +58,9 @@ class ListViewModel(
 
     init {
         viewModelScope.launch {
-            searches.emit(getRecentSearchesUseCase().toList())
+            val list = getRecentSearchesUseCase()
+            if(list.isNotEmpty())
+                searches.emit(list)
 
             searchText.collectLatest {
                 if(it.isNotBlank())
