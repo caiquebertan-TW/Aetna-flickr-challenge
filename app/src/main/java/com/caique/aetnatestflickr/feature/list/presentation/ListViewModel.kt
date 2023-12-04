@@ -2,42 +2,76 @@ package com.caique.aetnatestflickr.feature.list.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.caique.aetnatestflickr.data.model.Media
 import com.caique.aetnatestflickr.data.model.PhotoItem
-import com.caique.aetnatestflickr.data.network.FlickrRepository
+import com.caique.aetnatestflickr.feature.list.domain.GetPhotosUseCase
+import com.caique.aetnatestflickr.feature.list.domain.GetRecentSearchesUseCase
+import com.caique.aetnatestflickr.feature.list.domain.AddRecentSearchUseCase
+import com.caique.aetnatestflickr.util.ResultState
+import com.caique.aetnatestflickr.util.WhileUiSubscribed
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-val recentSearchs = List(5) {
-    "Search $it"
-}
-
 class ListViewModel(
-    private val flickrRepository: FlickrRepository,
+    private val getPhotosUseCase: GetPhotosUseCase,
+    private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
+    private val addRecentSearchUseCase: AddRecentSearchUseCase
 ) : ViewModel() {
-    private val _searchText = MutableStateFlow("")
-    var searchText: StateFlow<String> = _searchText
 
-    private val _photos = MutableStateFlow<List<PhotoItem>>(emptyList())
-    var photos: StateFlow<List<PhotoItem>> = _photos
+    private val searchText = MutableStateFlow("")
+    private val photos = MutableStateFlow<List<PhotoItem>>(emptyList())
+    private val searches = MutableStateFlow<List<String>>(emptyList())
+    private val loading = MutableStateFlow(false)
 
-    private val _searches = MutableStateFlow(recentSearchs)
-    var searches: StateFlow<List<String>> = _searches
+    val uiData = combine(searchText, photos, searches, loading) { text, photos, searches, loading ->
+        ListUiData(
+            searchText = text,
+            photos = photos,
+            searches = searches,
+            isLoading = loading
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = ListUiData(),
+        started = WhileUiSubscribed
+    )
 
-    init {
-        viewModelScope.launch {
-            _searchText.collectLatest {
-                if(it.isNotBlank()) {
-                    //TODO saveSearch? or save only if gets results?
-                }
+    fun search(text: String) = viewModelScope.launch {
+        loading.emit(true)
+        when(val resultPhotos = getPhotosUseCase(text)) {
+            is ResultState.Success -> {
+                searchText.emit(text)
+                photos.emit(resultPhotos.data)
+                loading.emit(false)
+            }
+            is ResultState.Error -> {
+                photos.emit(emptyList())
+                loading.emit(false)
+            }
+            else -> {
+                loading.emit(true)
             }
         }
     }
-    fun search(text: String) = viewModelScope.launch {
-        _searchText.emit(text)
-        _photos.emit(flickrRepository.searchPhotos(text))
-    }
 
+    init {
+        viewModelScope.launch {
+            searches.emit(getRecentSearchesUseCase().toList())
+
+            searchText.collectLatest {
+                if(it.isNotBlank())
+                    searches.emit(addRecentSearchUseCase(it))
+            }
+
+        }
+    }
 }
+
+data class ListUiData(
+    val searchText: String = "",
+    val photos: List<PhotoItem> = emptyList(),
+    val searches: List<String> = emptyList(),
+    val isLoading: Boolean = false
+)

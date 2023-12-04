@@ -1,13 +1,10 @@
 package com.caique.aetnatestflickr.ui.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -17,14 +14,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -37,7 +32,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.caique.aetnatestflickr.R
-import com.caique.aetnatestflickr.feature.list.presentation.recentSearchs
 import com.caique.aetnatestflickr.ui.design.AppIcons
 import com.caique.aetnatestflickr.ui.design.AppTheme
 import com.caique.aetnatestflickr.util.copyAndMoveSelection
@@ -57,6 +51,7 @@ fun SearchToolbar(
 //            onSearchQueryChanged = onSearchQueryChanged,
             onSearchTriggered = onSearchTriggered,
             searchQuery = searchQuery,
+            suggestions = suggestions
         )
     }
 }
@@ -67,13 +62,13 @@ private fun SearchTextField(
 //    onSearchQueryChanged: (String) -> Unit,
     searchQuery: String,
     onSearchTriggered: (String) -> Unit,
+    suggestions: List<String>,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var searchedQuery by remember {
         mutableStateOf(TextFieldValue(searchQuery))
     }
 
-    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
     var expanded by remember { mutableStateOf(false) }
 
     val onSearchExplicitlyTriggered = {
@@ -145,7 +140,7 @@ private fun SearchTextField(
             maxLines = 1,
             singleLine = true,
         )
-        val filteringOptions = options.filter { it.trim().contains(searchedQuery.text.trim(), ignoreCase = true) }
+        val filteringOptions = suggestions.filter { it.trim().contains(searchedQuery.text.trim(), ignoreCase = true) }
         if (filteringOptions.isNotEmpty()) {
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -174,7 +169,7 @@ private fun SearchScreenPreview() {
         SearchToolbar(
 //            onSearchQueryChanged = {},
             onSearchTriggered = {},
-            suggestions = recentSearchs
+            suggestions = emptyList()
         )
     }
 }
