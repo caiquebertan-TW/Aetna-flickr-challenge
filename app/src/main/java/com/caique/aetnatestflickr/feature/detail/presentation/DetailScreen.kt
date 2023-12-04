@@ -3,9 +3,7 @@ package com.caique.aetnatestflickr.feature.detail.presentation
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,40 +13,38 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.caique.aetnatestflickr.R
-import com.caique.aetnatestflickr.data.model.Media
 import com.caique.aetnatestflickr.data.model.PhotoItem
+import com.caique.aetnatestflickr.feature.list.presentation.ListViewModel
 import com.caique.aetnatestflickr.ui.design.AppTheme
 import org.koin.androidx.compose.getViewModel
 
-val sampleItem = PhotoItem(
-    title = "Sample Photo Title",
-    description = "Lorem ipsum bla bla bla ".repeat(5),
-    media = Media("https://example.com/sample_photo.jpg", 100, 150),
-    author = "Caique Bertan",
-    tags = "first second third"
-
-)
-
 @Composable
-fun DetailScreen(photo: PhotoItem) {
+fun DetailScreen(viewModel: ListViewModel = getViewModel()) {
     val configuration = LocalConfiguration.current
+//    val viewModel: ListViewModel = viewModel()
+
+    val photoItem by viewModel.detailUiState.collectAsStateWithLifecycle()
 
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    if (isLandscape) {
-        LandscapeDetail(photo = photo)
-    } else {
-        PortraitDetail(photo = photo)
+    photoItem?.let { photoItem ->
+        if (isLandscape) {
+            LandscapeDetail(photo = photoItem)
+        } else {
+            PortraitDetail(photo = photoItem)
+        }
     }
 }
 
@@ -120,7 +116,7 @@ fun LandscapeDetail(photo: PhotoItem) {
 @Composable
 fun PhotoDetailScreenPreview() {
     AppTheme {
-        DetailScreen(sampleItem)
+        DetailScreen()
     }
 }
 
@@ -132,6 +128,6 @@ fun PhotoDetailScreenPreview() {
 @Composable
 fun LandscapePhotoDetailPreview() {
     AppTheme {
-        DetailScreen(sampleItem)
+        DetailScreen()
     }
 }

@@ -9,6 +9,7 @@ import com.caique.aetnatestflickr.feature.list.domain.interactor.AddRecentSearch
 import com.caique.aetnatestflickr.util.ResultState
 import com.caique.aetnatestflickr.util.WhileUiSubscribed
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -25,8 +26,10 @@ class ListViewModel(
     private val searches = MutableStateFlow<List<String>>(emptyList())
     private val loading = MutableStateFlow(false)
 
-    val uiData = combine(searchText, photos, searches, loading) { text, photos, searches, loading ->
-        ListUiData(
+    private val photoSelected: MutableStateFlow<PhotoItem?> = MutableStateFlow(null)
+
+    val uiListState = combine(searchText, photos, searches, loading) { text, photos, searches, loading ->
+        ListUiState(
             searchText = text,
             photos = photos,
             searches = searches,
@@ -34,9 +37,11 @@ class ListViewModel(
         )
     }.stateIn(
         scope = viewModelScope,
-        initialValue = ListUiData(),
+        initialValue = ListUiState(),
         started = WhileUiSubscribed
     )
+
+    val detailUiState = photoSelected.asStateFlow()
 
     fun search(text: String) = viewModelScope.launch {
         loading.emit(true)
@@ -50,9 +55,13 @@ class ListViewModel(
                 photos.emit(emptyList())
                 loading.emit(false)
             }
-            else -> {
-                loading.emit(true)
-            }
+            else -> Unit
+        }
+    }
+
+    fun selectPhoto(photo: PhotoItem) {
+        viewModelScope.launch {
+            photoSelected.emit(photo)
         }
     }
 
@@ -71,9 +80,13 @@ class ListViewModel(
     }
 }
 
-data class ListUiData(
+data class ListUiState(
     val searchText: String = "",
     val photos: List<PhotoItem> = emptyList(),
     val searches: List<String> = emptyList(),
     val isLoading: Boolean = false
+)
+
+data class DetailUiState(
+    val photoSelected: PhotoItem? = null
 )

@@ -9,7 +9,7 @@ import com.caique.aetnatestflickr.feature.detail.presentation.DetailViewModel
 import com.caique.aetnatestflickr.feature.list.domain.interactor.AddRecentSearchUseCase
 import com.caique.aetnatestflickr.feature.list.domain.interactor.GetPhotosUseCase
 import com.caique.aetnatestflickr.feature.list.domain.interactor.GetRecentSearchesUseCase
-import com.caique.aetnatestflickr.feature.list.domain.RecentSearchRepositoryImpl
+import com.caique.aetnatestflickr.feature.list.domain.repository.RecentSearchRepositoryImpl
 import com.caique.aetnatestflickr.feature.list.presentation.ListViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel

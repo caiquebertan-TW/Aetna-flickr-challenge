@@ -9,7 +9,7 @@ class AddRecentSearchUseCase(
         searchQuery: String,
     ): List<String> {
         if(searchQuery.isNotBlank()) {
-            var searches = repository.getRecentSearchQueries().toMutableList()
+            val searches = repository.getRecentSearchQueries().toMutableList()
 
             if(searches.contains(searchQuery)){
                 searches.apply { remove(searchQuery) }

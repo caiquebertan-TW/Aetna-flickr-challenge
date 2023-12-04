@@ -16,10 +16,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -43,11 +41,11 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun PhotoList(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val viewModel: ListViewModel = getViewModel()
 
-    val uiData by viewModel.uiData.collectAsStateWithLifecycle()
+    val uiData by viewModel.uiListState.collectAsStateWithLifecycle()
     val (searchText, photos, searches, loading) = uiData
 
     Column(
@@ -73,8 +71,9 @@ fun PhotoList(
             ) {
                 items(photos) { photo ->
                     FlickrItem(
-                        navController = navController,
-                        photo = photo
+                        photo = photo,
+                        navigateToDetail = navController::navigateToDetail,
+                        selectPhoto = viewModel::selectPhoto
                     )
                 }
             }
@@ -92,14 +91,17 @@ fun PhotoList(
 }
 
 @Composable
-fun FlickrItem(photo: PhotoItem,
-              navController: NavController) {
+fun FlickrItem(
+    photo: PhotoItem,
+    navigateToDetail: () -> Unit,
+    selectPhoto: (PhotoItem) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navController.navigateToDetail(photo)
+                navigateToDetail()
+                selectPhoto(photo)
             }
     ) {
         GlideImage(
