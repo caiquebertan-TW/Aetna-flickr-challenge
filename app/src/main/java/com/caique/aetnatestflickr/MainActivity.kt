@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.caique.aetnatestflickr.ui.design.AppTheme
-import com.caique.aetnatestflickr.feature.list.presentation.PhotoList
 import com.caique.aetnatestflickr.ui.navigation.AppNavHost
 
 class MainActivity : ComponentActivity() {

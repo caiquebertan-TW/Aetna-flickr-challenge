@@ -6,9 +6,7 @@ interface RecentSearchRepository {
 
     suspend fun getRecentSearchQueries(): List<String>
 
-    suspend fun insertOrReplaceRecentSearch(searchQuery: String)
-
-    suspend fun removeLastSearch(): List<String>
+    suspend fun updateRecentSearchs(searches: List<String>)
 }
 
 
