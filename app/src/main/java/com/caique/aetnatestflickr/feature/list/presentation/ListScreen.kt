@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalGlideComposeApi::class, ExperimentalGlideComposeApi::class)
+@file:OptIn(ExperimentalGlideComposeApi::class)
 
 package com.caique.aetnatestflickr.feature.list.presentation
 
@@ -9,18 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
@@ -28,65 +22,50 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.caique.aetnatestflickr.R
-import com.caique.aetnatestflickr.data.model.Media
 import com.caique.aetnatestflickr.data.model.PhotoItem
-import com.caique.aetnatestflickr.data.network.FlickrApi
-import com.caique.aetnatestflickr.data.network.FlickrRepository
-import com.caique.aetnatestflickr.ui.Screen
 import com.caique.aetnatestflickr.ui.components.SearchToolbar
 import com.caique.aetnatestflickr.ui.design.AppTheme
 import com.caique.aetnatestflickr.ui.navigateToDetail
 import org.koin.androidx.compose.getViewModel
-
-val fakePhotoItemList: List<PhotoItem> = List(40) { index ->
-    PhotoItem(
-        id = "id_$index",
-        title = "Photo Title $index",
-        media = Media("https://example.com/photo_$index.jpg", 100, 150)
-    )
-}
-
-val recentSearchs = List(5) {
-    "Search $it"
-}
-
 
 @Composable
 fun PhotoList(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    var searchText by remember { mutableStateOf("") }
+    val viewModel: ListViewModel = getViewModel()
+    val searchText = viewModel.searchText.collectAsState()
+    val searches = viewModel.searches.collectAsState()
+    val photos = viewModel.photos.collectAsState()
 
     Column(
         modifier = modifier.fillMaxSize()
     ) {
         SearchToolbar(
+            searchQuery = searchText.value,
             onSearchTriggered = {
-                searchText = it
+                viewModel.search(it)
             },
-            suggestions = recentSearchs
+            suggestions = searches.value
         )
-        if(searchText.isNotBlank()) {
+        if(searchText.value.isNotBlank()) {
             LazyVerticalGrid(
+                modifier = Modifier.fillMaxSize(),
                 columns = GridCells.Adaptive(180.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                content = {
-                    items(fakePhotoItemList) { photo ->
-                        FlickrItem(
-                            navController = navController,
-                            photo = photo
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+            ) {
+                items(photos.value) { photo ->
+                    FlickrItem(
+                        navController = navController,
+                        photo = photo
+                    )
+                }
+            }
         }
     }
 }

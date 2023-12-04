@@ -9,10 +9,14 @@ data class FlickrResponse(
 
 @Parcelize
 class PhotoItem(
-    val id: String,
     val title: String,
-    val media: Media
-): Parcelable
+    val media: Media,
+    val description: String,
+    val author: String,
+    val tags: String
+): Parcelable {
+    fun getTags() = tags.split(" ")
+}
 
 @Parcelize
 data class Media(

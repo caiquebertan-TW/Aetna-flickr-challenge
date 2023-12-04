@@ -3,7 +3,9 @@ package com.caique.aetnatestflickr.feature.detail.presentation
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -28,9 +31,12 @@ import com.caique.aetnatestflickr.ui.design.AppTheme
 import org.koin.androidx.compose.getViewModel
 
 val sampleItem = PhotoItem(
-    id = "sample_id",
     title = "Sample Photo Title",
-    media = Media("https://example.com/sample_photo.jpg", 100, 150)
+    description = "Lorem ipsum bla bla bla ".repeat(5),
+    media = Media("https://example.com/sample_photo.jpg", 100, 150),
+    author = "Caique Bertan",
+    tags = "first second third"
+
 )
 
 @Composable
@@ -72,12 +78,27 @@ fun PortraitDetail(photo: PhotoItem) {
             Text(
                 text = photo.title,
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .align(Alignment.CenterHorizontally)
             )
-            Text(text = "Description: Add photo description here")
-            Text(text = "Width: ${photo.media.width}")
-            Text(text = "Height: ${photo.media.height}")
-            Text(text = "Author: Sample Author")
+
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "Description: ${photo.description}"
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "Width: ${photo.media.width}"
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "Height: ${photo.media.height}"
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = "Author: ${photo.author}"
+            )
         }
     }
 }
