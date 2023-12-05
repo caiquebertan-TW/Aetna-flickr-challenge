@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalGlideComposeApi::class)
+
 package com.caique.aetnatestflickr.feature.detail.presentation
 
 import android.content.res.Configuration
@@ -24,6 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.caique.aetnatestflickr.R
 import com.caique.aetnatestflickr.data.model.PhotoItem
 import com.caique.aetnatestflickr.feature.list.presentation.ListViewModel
@@ -31,20 +36,15 @@ import com.caique.aetnatestflickr.ui.design.AppTheme
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun DetailScreen(viewModel: ListViewModel = getViewModel()) {
+fun DetailScreen(photoItem: PhotoItem) {
     val configuration = LocalConfiguration.current
-//    val viewModel: ListViewModel = viewModel()
-
-    val photoItem by viewModel.detailUiState.collectAsStateWithLifecycle()
 
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    photoItem?.let { photoItem ->
-        if (isLandscape) {
-            LandscapeDetail(photo = photoItem)
-        } else {
-            PortraitDetail(photo = photoItem)
-        }
+    if (isLandscape) {
+        LandscapeDetail(photo = photoItem)
+    } else {
+        PortraitDetail(photo = photoItem)
     }
 }
 
@@ -56,13 +56,15 @@ fun PortraitDetail(photo: PhotoItem) {
             .verticalScroll(rememberScrollState())
     ) {
         // Fullscreen image
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground), // Replace with actual image
+        GlideImage(
+            model = photo.media.m,
             contentDescription = null,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
-            contentScale = ContentScale.Crop
+                .height(200.dp)
+                .fillMaxWidth(),
+            contentScale = ContentScale.Crop,
+            loading = placeholder(R.drawable.ic_launcher_foreground),
+            failure = placeholder(R.drawable.ic_launcher_background)
         )
 
         // Photo details
@@ -102,13 +104,14 @@ fun PortraitDetail(photo: PhotoItem) {
 @Composable
 fun LandscapeDetail(photo: PhotoItem) {
     // Fullscreen image without details
-    Image(
-        painter = painterResource(id = R.drawable.ic_launcher_foreground), // Replace with actual image
+    GlideImage(
+        model = photo.media.m,
         contentDescription = null,
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        contentScale = ContentScale.Crop
+            .fillMaxSize(),
+        contentScale = ContentScale.Fit,
+        loading = placeholder(R.drawable.ic_launcher_foreground),
+        failure = placeholder(R.drawable.ic_launcher_background)
     )
 }
 
@@ -116,18 +119,6 @@ fun LandscapeDetail(photo: PhotoItem) {
 @Composable
 fun PhotoDetailScreenPreview() {
     AppTheme {
-        DetailScreen()
-    }
-}
-
-@Preview(name = "5-inch Device Landscape",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    widthDp = 640, heightDp = 360
-    )
-@Composable
-fun LandscapePhotoDetailPreview() {
-    AppTheme {
-        DetailScreen()
+//        DetailScreen()
     }
 }

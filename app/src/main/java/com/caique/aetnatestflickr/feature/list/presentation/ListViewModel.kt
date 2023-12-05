@@ -3,13 +3,12 @@ package com.caique.aetnatestflickr.feature.list.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.caique.aetnatestflickr.data.model.PhotoItem
+import com.caique.aetnatestflickr.feature.list.domain.interactor.AddRecentSearchUseCase
 import com.caique.aetnatestflickr.feature.list.domain.interactor.GetPhotosUseCase
 import com.caique.aetnatestflickr.feature.list.domain.interactor.GetRecentSearchesUseCase
-import com.caique.aetnatestflickr.feature.list.domain.interactor.AddRecentSearchUseCase
 import com.caique.aetnatestflickr.util.ResultState
 import com.caique.aetnatestflickr.util.WhileUiSubscribed
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -26,8 +25,6 @@ class ListViewModel(
     private val searches = MutableStateFlow<List<String>>(emptyList())
     private val loading = MutableStateFlow(false)
 
-    private val photoSelected: MutableStateFlow<PhotoItem?> = MutableStateFlow(null)
-
     val uiListState = combine(searchText, photos, searches, loading) { text, photos, searches, loading ->
         ListUiState(
             searchText = text,
@@ -40,8 +37,6 @@ class ListViewModel(
         initialValue = ListUiState(),
         started = WhileUiSubscribed
     )
-
-    val detailUiState = photoSelected.asStateFlow()
 
     fun search(text: String) = viewModelScope.launch {
         loading.emit(true)
@@ -56,12 +51,6 @@ class ListViewModel(
                 loading.emit(false)
             }
             else -> Unit
-        }
-    }
-
-    fun selectPhoto(photo: PhotoItem) {
-        viewModelScope.launch {
-            photoSelected.emit(photo)
         }
     }
 

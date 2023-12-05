@@ -72,8 +72,7 @@ fun PhotoList(
                 items(photos) { photo ->
                     FlickrItem(
                         photo = photo,
-                        navigateToDetail = navController::navigateToDetail,
-                        selectPhoto = viewModel::selectPhoto
+                        navigateToDetail = navController::navigateToDetail
                     )
                 }
             }
@@ -93,15 +92,14 @@ fun PhotoList(
 @Composable
 fun FlickrItem(
     photo: PhotoItem,
-    navigateToDetail: () -> Unit,
-    selectPhoto: (PhotoItem) -> Unit) {
+    navigateToDetail: (PhotoItem) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navigateToDetail()
-                selectPhoto(photo)
+                navigateToDetail(photo)
             }
     ) {
         GlideImage(
