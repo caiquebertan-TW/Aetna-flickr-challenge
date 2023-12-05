@@ -13,9 +13,12 @@ glideCompose = "1.0.0-beta01"
 junit = "1.1.5"
 junit4 = "4.13.2"
 mockito = "2.28.2"
-koinAndroid = "3.3.3"
+mockk = "1.12.0"
+koinAndroid = "3.5.0"
 koinAndroidxCompose = "3.4.2"
-koinCore = "3.3.3"
+koinCore = "3.5.0"
+koinAndroidxViewmodel = "2.2.3"
+kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.1"
 material3 = "1.1.2"
 retrofit = "2.9.0"
@@ -42,9 +45,13 @@ glide = { group = "com.github.bumptech.glide", name= "glide", version.ref = "gli
 glide-compose = { group = "com.github.bumptech.glide", name="compose", version.ref = "glideCompose" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 mockito = {group = "org.mockito", name = "mockito-core", version.ref = "mockito"}
+mockk = {group ="io.mockk", name="mockk", version.ref = "mockk"}
+mockk-android = {group ="io.mockk", name="mockk-android", version.ref = "mockk"}
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
+koin-androidx-viewmodel  = { module = "io.insert-koin:koin-androidx-viewmodel", version.ref = "koinAndroidxViewmodel" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
