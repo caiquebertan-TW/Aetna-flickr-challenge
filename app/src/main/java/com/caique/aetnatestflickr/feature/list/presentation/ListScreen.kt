@@ -12,7 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,11 +74,11 @@ fun PhotoList(
             }
         }
         else if(searchText.isNotBlank()) {
-            LazyVerticalGrid(
+            LazyVerticalStaggeredGrid(
                 modifier = Modifier
                     .fillMaxSize()
                     .testTag("success"),
-                columns = GridCells.Adaptive(180.dp),
+                columns = StaggeredGridCells.Adaptive(180.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 items(photos) { photo ->
@@ -102,7 +108,9 @@ fun FlickrItem(
     photo: PhotoItem,
     navigateToDetail: (PhotoItem) -> Unit
 ) {
-    Column(
+    Card(
+        elevation = CardDefaults.cardElevation(4.dp),
+        shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -115,26 +123,29 @@ fun FlickrItem(
             .testTag("item")
 
     ) {
-        GlideImage(
-            model = photo.media.m,
-            contentDescription = photo.title,
-            modifier = Modifier
-                .height(200.dp)
-                .fillMaxWidth(),
-            contentScale = ContentScale.Crop,
-            loading = placeholder(R.drawable.ic_launcher_foreground),
-            failure = placeholder(R.drawable.ic_launcher_background)
-        )
+        Column {
 
-        Text(
-            text = photo.title,
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
+            GlideImage(
+                model = photo.media.m,
+                contentDescription = photo.title,
+                modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop,
+                loading = placeholder(R.drawable.ic_launcher_foreground),
+                failure = placeholder(R.drawable.ic_launcher_background)
+            )
 
-        )
+            Text(
+                text = photo.title,
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .fillMaxWidth()
+
+            )
+        }
     }
 }
 

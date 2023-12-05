@@ -44,7 +44,9 @@ fun SearchToolbar(
     onSearchTriggered: (String) -> Unit,
 ) {
     Box(
-        modifier = modifier.padding(horizontal = 16.dp
+        modifier = modifier
+            .padding(
+                horizontal = 16.dp, vertical = 8.dp
     )) {
         SearchTextField(
             onSearchTriggered = onSearchTriggered,

@@ -3,8 +3,12 @@
 package com.caique.aetnatestflickr.feature.list.presentation
 
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
+import android.text.SpannableStringBuilder
 import android.text.util.Linkify
+import android.webkit.WebView
 import android.widget.TextView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +23,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
@@ -26,8 +31,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +46,10 @@ import androidx.core.text.HtmlCompat
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.caique.aetnatestflickr.R
 import com.caique.aetnatestflickr.data.model.Media
 import com.caique.aetnatestflickr.data.model.PhotoItem
@@ -88,36 +101,32 @@ fun PortraitDetail(photo: PhotoItem) {
                     .align(Alignment.CenterHorizontally)
             )
 
-            Column(Modifier.semantics(mergeDescendants = true){}) {
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    text = "Description",
-                    textAlign = TextAlign.Center
-                )
-                AndroidView(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    factory = {
-                        TextView(it).apply {
-                            autoLinkMask = Linkify.WEB_URLS
-                            linksClickable = true
-                        }
-                    },
-                    update = { it.text = HtmlCompat.fromHtml(photo.description, 0) }
-                )
-            }
-
             Text(
-                modifier = Modifier.padding(bottom = 4.dp),
-                text = "Width: ${photo.media.width}"
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                text = "Description",
+                textAlign = TextAlign.Center
+            )
+            val context = LocalContext.current
+            AndroidView(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp)),
+                factory = {
+                    WebView(context).apply {
+                        loadData(photo.description,"text/html; charset=UTF-8", null)
+                    }
+                }
+            )
+
+            val widthAndHeight = photo.getWidthAndHeight()
+            Text(
+                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
+                text = "Width: ${widthAndHeight?.first}"
             )
             Text(
                 modifier = Modifier.padding(bottom = 16.dp),
-                text = "Height: ${photo.media.height}",
+                text = "Height: ${widthAndHeight?.second}",
                 textAlign = TextAlign.Center
             )
             Column(Modifier.semantics(mergeDescendants = true){}) {
@@ -175,7 +184,7 @@ fun PhotoDetailScreenPreview() {
                 title = "Title",
                 author = "Caique Bertan",
                 description = "<p>Lorem ipsum blablabla ".repeat(5),
-                media = Media("https://google.com", 100, 100),
+                media = Media("https://google.com"),
                 tags ="teste 1 2 3 testando bigtexttagtoseehowitgoes"
             ))
     }

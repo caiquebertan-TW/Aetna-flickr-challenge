@@ -16,11 +16,24 @@ class PhotoItem(
     val tags: String
 ): Parcelable {
     fun getTags() = tags.split(" ")
+    fun getWidthAndHeight(): Pair<Int, Int>? {
+        val regex = """width=\"(\d+)\" height=\"(\d+)\"""".toRegex()
+        val matchResult = regex.find(description)
+
+        return matchResult?.let {
+            val width = it.groupValues[1].toIntOrNull()
+            val height = it.groupValues[2].toIntOrNull()
+
+            if (width != null && height != null) {
+                Pair(width, height)
+            } else {
+                null
+            }
+        }
+    }
 }
 
 @Parcelize
 data class Media(
     val m: String,
-    val width: Int,
-    val height: Int
 ): Parcelable
