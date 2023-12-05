@@ -57,7 +57,6 @@ fun SearchToolbar(
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchTextField(
-//    onSearchQueryChanged: (String) -> Unit,
     searchQuery: String,
     onSearchTriggered: (String) -> Unit,
     suggestions: List<String>,
@@ -165,7 +164,6 @@ private fun SearchTextField(
 private fun SearchScreenPreview() {
     AppTheme {
         SearchToolbar(
-//            onSearchQueryChanged = {},
             onSearchTriggered = {},
             suggestions = emptyList()
         )

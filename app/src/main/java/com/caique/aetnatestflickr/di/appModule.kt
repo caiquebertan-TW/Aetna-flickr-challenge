@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import com.caique.aetnatestflickr.data.network.FlickrApi
 import com.caique.aetnatestflickr.data.domain.FlickrRepository
 import com.caique.aetnatestflickr.data.domain.RecentSearchRepository
-import com.caique.aetnatestflickr.feature.detail.presentation.DetailViewModel
 import com.caique.aetnatestflickr.feature.list.domain.interactor.AddRecentSearchUseCase
 import com.caique.aetnatestflickr.feature.list.domain.interactor.GetPhotosUseCase
 import com.caique.aetnatestflickr.feature.list.domain.interactor.GetRecentSearchesUseCase
@@ -30,7 +29,6 @@ val appModule = module {
     single { GetRecentSearchesUseCase(get()) }
 
     viewModel { ListViewModel(get(), get(), get()) }
-    viewModel { DetailViewModel(get()) }
 }
 
 private fun provideRetrofit(): Retrofit {

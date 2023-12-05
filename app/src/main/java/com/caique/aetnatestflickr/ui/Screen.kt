@@ -16,9 +16,7 @@ sealed class Screen(
 
 fun NavController.navigateToDetail(photoItem: PhotoItem) {
   currentBackStackEntry?.savedStateHandle?.set("photo", photoItem)
-  navigate(
-    "detail/$photoItem"
-  )
+  navigate("detail/$photoItem")
 }
 
 fun NavController.getDetailPhoto() = previousBackStackEntry?.savedStateHandle

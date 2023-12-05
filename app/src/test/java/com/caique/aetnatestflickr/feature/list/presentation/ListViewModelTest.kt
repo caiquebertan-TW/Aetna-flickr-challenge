@@ -71,4 +71,28 @@ class ListViewModelTest {
         }
 
     }
+
+    @Test
+    fun `when search is error, result state should be error`() = runTest {
+        val photoItems = mutableListOf<PhotoItem>()
+        (1..5).forEach {
+            photoItems.add(PhotoItem(
+                title = "Photo $it",
+                media = Media(m = "", width = 100, height = 100),
+                description = "Lorep ipsum $it",
+                author = "Caique Bertan",
+                tags = "teste $it"
+            ))
+        }
+
+        coEvery { getPhotosUseCase("teste") } returns ResultState.Error
+
+        listViewModel.search("teste")
+
+        listViewModel.uiListState.first().let {
+            assertEquals(it.searchText, "")
+            assertEquals(it.photos.size, 0)
+        }
+
+    }
 }
