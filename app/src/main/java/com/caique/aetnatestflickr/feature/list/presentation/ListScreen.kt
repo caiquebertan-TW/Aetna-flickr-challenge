@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -60,13 +61,17 @@ fun PhotoList(
             suggestions = searches
         )
         if(loading) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .testTag("loading")) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
         else if(searchText.isNotBlank()) {
             LazyVerticalGrid(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testTag("success"),
                 columns = GridCells.Adaptive(180.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
@@ -79,7 +84,9 @@ fun PhotoList(
             }
         }
         else if(searches.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .testTag("empty")) {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
                     text = stringResource(R.string.no_searches_yet),
@@ -105,6 +112,7 @@ fun FlickrItem(
                 navigateToDetail(photo)
             }
             .semantics(mergeDescendants = true) {}
+            .testTag("item")
 
     ) {
         GlideImage(
