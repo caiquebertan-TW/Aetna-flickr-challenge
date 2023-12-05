@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -98,13 +99,17 @@ fun FlickrItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable {
+            .clickable(
+                onClickLabel = stringResource(R.string.see_details)
+            ) {
                 navigateToDetail(photo)
             }
+            .semantics(mergeDescendants = true) {}
+
     ) {
         GlideImage(
             model = photo.media.m,
-            contentDescription = null,
+            contentDescription = photo.title,
             modifier = Modifier
                 .height(200.dp)
                 .fillMaxWidth(),
